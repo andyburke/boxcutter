@@ -1,6 +1,6 @@
 {
   "name": "boxcutter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A utility knife for interacting with package.json",
   "main": "index.js",
   "bin": {
