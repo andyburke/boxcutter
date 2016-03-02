@@ -1,0 +1,29 @@
+{
+  "name": "boxcutter-test",
+  "version": "1.0.0",
+  "description": "A utility knife for interacting with package.json",
+  "main": "index.js",
+  "bin": {
+    "boxcutter": "./cli.js"
+  },
+  "keywords": [
+    "package.json"
+  ],
+  "author": "Andy Burke <aburke@bitflood.org>",
+  "license": "MIT",
+  "dependencies": {
+    "delver": "^1.0.0",
+    "yargs": "^4.2.0"
+  },
+  "config": {
+    "test": "FOO",
+    "deep": {
+      "test": "BAR"
+    }
+  },
+  "array": [
+    1,
+    2,
+    3
+  ]
+}

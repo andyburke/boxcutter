@@ -1,0 +1,41 @@
+{
+    "usage": [
+        "Usage: boxcutter <command>",
+        "  commands: get, set, help",
+        "  options:",
+        "    --indent <num> : will indent json output the specified number of spaces"
+    ],
+
+    "commands": {
+        "get": [
+            "Usage: boxcutter get <key>",
+            "  Gets the value for the specified key and prints it to stdout.",
+            "    Eg:",
+            "",
+            "      > boxcutter get version",
+            "      1.0.0",
+            "      >",
+            ""
+        ],
+
+        "set": [
+            "Usage: boxcutter set <key> <value>",
+            "  Sets the given key to value and saves the package.json.",
+            "    Eg:",
+            "",
+            "      > boxcutter set version 1.0.1",
+            "      > boxcutter get version",
+            "      1.0.1",
+            "      >",
+            ""
+        ],
+
+        "unknown command": [
+            "Usage: boxcutter <command>",
+            "  available commands:",
+            "    get            : get a value from the package.json",
+            "    set            : set a value in the package.json",
+            "    help <command> : get help for the specified command"
+        ]
+    }
+}
