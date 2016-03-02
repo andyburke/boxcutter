@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/andyburke/boxcutter/1c6b8e2fe01aa39ceb292f5b8f625f6fc17cdf77/boxcutter.png" width="48">
+<img src="https://raw.githubusercontent.com/andyburke/boxcutter/1c6b8e2fe01aa39ceb292f5b8f625f6fc17cdf77/boxcutter.png" width="192">
 
 # Boxcutter
 
