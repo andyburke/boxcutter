@@ -1,21 +1,18 @@
 ![Boxcutter](/boxcutter.png?raw=true)
 
 # Boxcutter
-====
 
 A utility knife for interacting with package.json
 
 # Installation
 
 ## Local (recommended)
-====
 
 ```
 npm install boxcutter --save
 ```
 
 ## Global
-====
 
 ```
 sudo npm install boxcutter -g
@@ -24,7 +21,6 @@ sudo npm install boxcutter -g
 # Usage
 
 ## CLI
-====
 
 Walks up your directory tree looking for a package.json. If it finds one, it will load it
 and allow you to interact with it:
@@ -49,7 +45,6 @@ Example:
 ```
 
 ## API
-====
 
 ```javascript
 const Boxcutter = require( 'boxcutter' );
