@@ -1,9 +1,13 @@
 {
     "usage": [
         "Usage: boxcutter <command>",
-        "  commands: get, set, help",
+        "  available commands:",
+        "    get               : get a value from the package.json",
+        "    set               : set a value in the package.json",
+        "    help <command>    : get help for the specified command",
         "  options:",
-        "    --indent <num> : will indent json output the specified number of spaces"
+        "    --indent <num>    : will indent json output the specified number of spaces",
+        "    --file <filename> : will use specified json as input / output file"
     ],
 
     "commands": {

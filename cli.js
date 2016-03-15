@@ -17,13 +17,15 @@ const directory = process.cwd();
 let directoryElements = directory.split( path.sep );
 let loaded = false;
 
-let packageFile = null;
+const jsonFileName = argv.file ? argv.file : 'package.json';
+let jsonFile = null;
 
 do {
-    packageFile = path.sep + path.join.apply( path, directoryElements.concat( [ 'package.json' ] ) );
+
+    jsonFile = path.sep + path.join.apply( path, directoryElements.concat( [ jsonFileName ] ) );
 
     try {
-        boxcutter.load( packageFile );
+        boxcutter.load( jsonFile );
         loaded = true;
     }
     catch( ex ) {
@@ -31,6 +33,11 @@ do {
     }
 
 } while( !loaded && directoryElements.pop() );
+
+if ( !loaded ) {
+    console.error( `Could not locate file ${jsonFileName} in directory ancestry tree.` );
+    process.exit( 1 );
+}
 
 const command = argv._.shift();
 
@@ -57,7 +64,7 @@ const commands = {
         const value = argv._.shift();
 
         boxcutter.set( key, value );
-        boxcutter.save( packageFile, function( error ) {
+        boxcutter.save( jsonFile, function( error ) {
             if ( error ) {
                 console.error( error );
                 process.exit( 1 );
