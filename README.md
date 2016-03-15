@@ -8,13 +8,13 @@ A utility knife for interacting with package.json
 
 ## Local (recommended)
 
-```
+```sh
 npm install boxcutter --save
 ```
 
 ## Global
 
-```
+```sh
 sudo npm install boxcutter -g
 ```
 
@@ -22,26 +22,38 @@ sudo npm install boxcutter -g
 
 ## CLI
 
-Walks up your directory tree looking for a package.json. If it finds one, it will load it
+Walks up your directory tree looking for a `package.json` file. If it finds one, it will load it
 and allow you to interact with it:
 
-```
+```sh
 Usage: boxcutter <command>
   available commands:
-    get            : get a value from the package.json
-    set            : set a value in the package.json
-    help <command> : get help for the specified command
+    get               : get a value from the package.json
+    set               : set a value in the package.json
+    help <command>    : get help for the specified command
+  options:
+    --indent <num>    : will indent json output the specified number of spaces
+    --file <filename> : will use specified json as input / output file
 ```
 
 Example:
 
-```
+```sh
 > boxcutter get version
 1.0.0
 > boxcutter set version 1.0.1
 > boxcutter get version
 1.0.1
 >
+```
+
+You may optionally use the `--file` flag to specify a json file other than `package.json`:
+```sh
+> boxcutter --file apidoc.json get name
+Boxcutter
+> boxcutter --file apidoc.json set name "Boxcutter API Documentation"
+> boxcutter --file apidoc.json get name
+Boxcutter API Documentation
 ```
 
 ## API

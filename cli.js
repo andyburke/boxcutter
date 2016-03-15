@@ -10,6 +10,7 @@ const argv = require( 'yargs' )
 
 const Boxcutter = require( './index.js' );
 const path = require( 'path' );
+const fs = require( 'fs' );
 
 let boxcutter = Object.assign( {}, Boxcutter.Boxcutter );
 
@@ -17,13 +18,28 @@ const directory = process.cwd();
 let directoryElements = directory.split( path.sep );
 let loaded = false;
 
-let packageFile = null;
+let jsonFile = null;
 
 do {
-    packageFile = path.sep + path.join.apply( path, directoryElements.concat( [ 'package.json' ] ) );
+    if ( argv.file ) {
+        // if `--file` option used, check that file actually exists
+        try {
+            if ( fs.statSync( argv.file ).isFile() ) {
+                jsonFile = path.sep + path.join.apply( path, directoryElements.concat( [ `${argv.file}` ] ) );
+            }
+        } catch ( ex ) {
+            console.error( ex );
+            process.exit( 1 );
+        }
 
+    } else {
+        // if no `--file` option, we assume `package.json`
+        jsonFile = path.sep + path.join.apply( path, directoryElements.concat( [ 'package.json' ] ) );
+    }
+
+    // attempt loading file into boxcutter
     try {
-        boxcutter.load( packageFile );
+        boxcutter.load( jsonFile );
         loaded = true;
     }
     catch( ex ) {
@@ -57,7 +73,7 @@ const commands = {
         const value = argv._.shift();
 
         boxcutter.set( key, value );
-        boxcutter.save( packageFile, function( error ) {
+        boxcutter.save( jsonFile, function( error ) {
             if ( error ) {
                 console.error( error );
                 process.exit( 1 );

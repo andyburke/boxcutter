@@ -1,0 +1,33 @@
+{
+  "name": "boxcutter-another-json-file-test",
+  "version": "1.2.3",
+  "description": "A utility knife for interacting with package.json (and other json files via CLI)",
+  "main": "index.js",
+  "bin": {
+    "boxcutter": "./cli.js"
+  },
+  "keywords": [
+    "package.json"
+  ],
+  "author": "Greg Cardoni <greg@cardoni.net> (https://cardoni.net)",
+  "license": "MIT",
+  "dependencies": {
+    "delver": "^1.0.0",
+    "yargs": "^4.2.0"
+  },
+  "test": {
+    "config": {
+      "test": "FOO",
+      "deep": {
+        "test": "BAR"
+      }
+    },
+    "array": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  }
+}
