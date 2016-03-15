@@ -1,7 +1,7 @@
 {
   "name": "boxcutter",
-  "version": "1.1.5",
-  "description": "A utility knife for interacting with package.json",
+  "version": "1.2.0",
+  "description": "A utility knife for interacting with package.json (or other json files)",
   "main": "index.js",
   "bin": {
     "boxcutter": "./cli.js"

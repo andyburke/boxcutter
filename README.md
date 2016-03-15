@@ -2,7 +2,7 @@
 
 # Boxcutter
 
-A utility knife for interacting with package.json
+A utility knife for interacting with package.json (or other json files)
 
 # Installation
 
