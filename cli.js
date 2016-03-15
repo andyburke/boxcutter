@@ -18,26 +18,13 @@ const directory = process.cwd();
 let directoryElements = directory.split( path.sep );
 let loaded = false;
 
+const jsonFileName = argv.file ? argv.file : 'package.json';
 let jsonFile = null;
 
 do {
-    if ( argv.file ) {
-        // if `--file` option used, check that file actually exists
-        try {
-            if ( fs.statSync( argv.file ).isFile() ) {
-                jsonFile = path.sep + path.join.apply( path, directoryElements.concat( [ `${argv.file}` ] ) );
-            }
-        } catch ( ex ) {
-            console.error( ex );
-            process.exit( 1 );
-        }
 
-    } else {
-        // if no `--file` option, we assume `package.json`
-        jsonFile = path.sep + path.join.apply( path, directoryElements.concat( [ 'package.json' ] ) );
-    }
+    jsonFile = path.sep + path.join.apply( path, directoryElements.concat( [ jsonFileName ] ) );
 
-    // attempt loading file into boxcutter
     try {
         boxcutter.load( jsonFile );
         loaded = true;
@@ -47,6 +34,11 @@ do {
     }
 
 } while( !loaded && directoryElements.pop() );
+
+if ( !loaded ) {
+    console.error( `Could not locate file ${jsonFileName} in directory ancestry tree.` );
+    process.exit( 1 );
+}
 
 const command = argv._.shift();
 
