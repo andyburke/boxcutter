@@ -10,7 +10,6 @@ const argv = require( 'yargs' )
 
 const Boxcutter = require( './index.js' );
 const path = require( 'path' );
-const fs = require( 'fs' );
 
 let boxcutter = Object.assign( {}, Boxcutter.Boxcutter );
 
