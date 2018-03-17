@@ -1,10 +1,10 @@
 {
   "name": "boxcutter",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "A utility knife for interacting with package.json (or other json files)",
   "main": "index.js",
   "bin": {
-    "boxcutter": "./cli.js"
+    "boxcutter": "./bin/boxcutter"
   },
   "scripts": {
     "test": "tape test/*.js | tap-spec"
@@ -16,7 +16,7 @@
   "keywords": [
     "package.json"
   ],
-  "author": "Andy Burke <aburke@bitflood.org> (https://github.com/andyburke)",
+  "author": "Andy Burke <andy.burke@mailbox.earth> (https://github.com/andyburke)",
   "contributors": [
     "Greg Cardoni <greg@cardoni.net> (https://cardoni.net)"
   ],
@@ -25,14 +25,15 @@
     "url": "https://github.com/andyburke/boxcutter/issues"
   },
   "homepage": "https://github.com/andyburke/boxcutter#readme",
-  "engine": "node >= 4.3.0",
+  "engine": "node >= 8.0.0",
   "dependencies": {
     "delver": "^1.1.0",
     "extend": "^3.0.0",
-    "yargs": "^4.2.0"
+    "walk-up": "^1.0.2",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "tap-spec": "^4.1.1",
-    "tape": "^4.4.0"
+    "tape-async": "^2.3.0"
   }
 }

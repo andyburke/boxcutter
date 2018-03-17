@@ -1,10 +1,9 @@
 'use strict';
 
 const child_process = require( 'child_process' );
-const test = require( 'tape' );
+const test = require( 'tape-async' );
 
 const pkg = require( '../package.json' );
-const help = require( '../help.json' );
 
 let cli = null;
 
@@ -24,11 +23,7 @@ test( 'CLI: execute without arguments', t => {
 
     const result = child_process.spawnSync( process.execPath, [ cli ] );
     t.ok( result.status, 'Executed' );
-    t.ok( result.stderr && result.stderr.toString().length, 'Outputs usage' );
-    t.equal( result.stderr.toString().trim(), help.usage.concat( [
-        '',
-        'Not enough non-option arguments: got 0, need at least 1'
-    ] ).join( '\n' ), 'Usage is correct' );
+    t.ok( result.stderr && result.stderr.toString().length, 'Outputs error' );
 
     t.end();
 } );
@@ -38,37 +33,6 @@ test( 'CLI: execute help with no arguments', t => {
     const result = child_process.spawnSync( process.execPath, [ cli, 'help' ] );
     t.error( result.status, 'Executed' );
     t.ok( result.stdout && result.stdout.toString().length, 'Outputs help' );
-    t.equal( result.stdout.toString().trim(), help.commands[ 'unknown command' ].join( '\n' ), 'Help output is correct' );
-
-    t.end();
-} );
-
-test( 'CLI: execute help on unknown command', t => {
-
-    const result = child_process.spawnSync( process.execPath, [ cli, 'help', 'foo' ] );
-    t.error( result.status, 'Executed' );
-    t.ok( result.stderr && result.stderr.toString().length, 'Outputs help error' );
-    t.equal( result.stderr.toString().slice( 0, -1 ), [ 'Unknown command: foo' ].concat( help.commands[ 'unknown command' ] ).join( '\n' ), 'Help error output is correct' );
-
-    t.end();
-} );
-
-test( 'CLI: execute help on get', t => {
-
-    const result = child_process.spawnSync( process.execPath, [ cli, 'help', 'get' ] );
-    t.error( result.status, 'Executed' );
-    t.ok( result.stdout && result.stdout.toString().length, 'Outputs help' );
-    t.equal( result.stdout.toString().slice( 0, -1 ), help.commands.get.join( '\n' ), 'Help output is correct' );
-
-    t.end();
-} );
-
-test( 'CLI: execute help on set', t => {
-
-    const result = child_process.spawnSync( process.execPath, [ cli, 'help', 'set' ] );
-    t.error( result.status, 'Executed' );
-    t.ok( result.stdout && result.stdout.toString().length, 'Outputs help' );
-    t.equal( result.stdout.toString().slice( 0, -1 ), help.commands.set.join( '\n' ), 'Help output is correct' );
 
     t.end();
 } );

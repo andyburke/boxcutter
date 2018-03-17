@@ -1,0 +1,143 @@
+#!/usr/bin/env node
+
+'use strict';
+
+
+const path = require( 'path' );
+const util = require( 'util' );
+const walk_up = util.promisify( require( 'walk-up' ) );
+const yargs = require( 'yargs' );
+
+const Boxcutter = require( path.resolve( path.join( __dirname, '..', 'index.js' ) ) );
+
+async function read_stdin() {
+    let buf = '';
+    return new Promise( resolve => {
+        process.stdin.on( 'readable', () => {
+            const chunk = process.stdin.read();
+            if ( chunk !== null ) {
+                buf += chunk;
+            }
+        } );
+        process.stdin.on( 'end', () => resolve( buf ) );
+    } );
+}
+
+yargs
+    .option( 'stdin', {
+        default: false,
+        description: 'read json from stdin vs. from a file or package.json'
+    } )
+    .option( 'file', {
+        default: 'package.json',
+        description: 'the file to search up the directory path for'
+    } )
+    .option( 'indent', {
+        default: 2,
+        description: 'indentation level for json output'
+    } )
+    .option( 'save', {
+        default: false,
+        description: 'write changes back to input file'
+    } )
+    .command( {
+        command: 'get <key>',
+        description: 'get the value of <key>',
+        builder: yargs => {
+            return yargs.positional( 'key', {
+                type: 'string',
+                description: 'the key to get'
+            } )
+            .demandOption( 'key', 'You must specify a key to get!' );
+        },
+        handler: async options => {
+            const boxcutter = Boxcutter.create();
+            if ( options.stdin ) {
+                const json = await read_stdin();
+                boxcutter.read( json );
+            }
+            else {
+                const filename_search = await walk_up( process.cwd(), options.file );
+
+                if ( !filename_search.found ) {
+                    console.error( `Could not locate ${ options.file } in directory tree!` );
+                    process.exit( 1 );
+                }
+
+                const filename = path.join( filename_search.path, options.file );
+
+                boxcutter.load( filename );
+            }
+
+            const result = boxcutter.get( options.key );
+            console.log( typeof result === 'object' ? JSON.stringify( result, null, options.indent ) : result );
+            process.exit( 0 );
+        }
+    } )
+    .command( {
+        command: 'set <key> <value>',
+        description: 'set <key> to <value>',
+        builder: yargs => {
+            return yargs
+                .positional( 'key', {
+                    type: 'string',
+                    description: 'the key to set'
+                } )
+                .positional( 'value', {
+                    description: 'the value to set key to'
+                } )
+                .demandOption( [ 'key', 'value' ], 'You must specify both a key and a value!' );
+        },
+        handler: async options => {
+            const boxcutter = Boxcutter.create();
+            if ( options.stdin ) {
+                const json = await read_stdin();
+                boxcutter.read( json );
+                boxcutter.set( options.key, options.value );
+
+                if ( options.save ) {
+                    console.error( `Cannot save when reading from stdin!` );
+                    process.exit( 1 );
+                }
+
+                console.log( boxcutter.serialize( options ) );
+                process.exit( 0 );
+            }
+            else {
+                const filename_search = await walk_up( process.cwd(), options.file );
+
+                if ( !filename_search.found ) {
+                    console.error( `Could not locate ${ options.file } in directory tree!` );
+                    process.exit( 1 );
+                }
+
+                const filename = path.join( filename_search.path, options.file );
+
+                boxcutter.load( filename );
+                boxcutter.set( options.key, options.value );
+
+                if ( options.save ) {
+                    await boxcutter.save( filename, options );
+                }
+                else {
+                    console.log( boxcutter.serialize( options ) );
+                }
+
+                process.exit( 0 );
+            }
+        }
+    } )
+    .demandCommand( 1, 'You must specify a command.' )
+    .help()
+    .fail( ( message, error ) => {
+        if ( error ) {
+            throw error;
+        }
+
+        if ( message ) {
+            console.error( message );
+        }
+
+        process.exit( 1 );
+    } )
+    .argv;

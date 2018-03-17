@@ -3,51 +3,49 @@
 const Delver = require( 'delver' );
 const extend = require( 'extend' );
 const fs = require( 'fs' );
+const util = require( 'util' );
 
-let Boxcutter = {};
+const async_write_file = util.promisify( fs.writeFile );
 
-Boxcutter.load = function( filename ) {
-    const self = this;
-    self.package = extend( true, {}, require( filename ) );
-};
+const Boxcutter = {
+    read: function( json ) {
+        this.__obj = JSON.parse( json );
+        return this;
+    },
 
-Boxcutter.save = function( filename, _options, _callback ) {
-    const self = this;
+    load: function( filename ) {
+        this.__obj = extend( true, {}, require( filename ) );
+        return this;
+    },
 
-    const callback = typeof _callback === 'function' ? _callback : typeof _options === 'function' ? _options : null;
+    save: async function( filename, options ) {
+        const output = this.serialize( options );
+        await async_write_file( filename, output );
+        return this;
+    },
 
-    _options = typeof _options === 'object' ? _options : null;
-    const options = extend( true, {}, {
-        json: {
-            indent: 2
-        }
-    }, _options );
+    get: function( key ) {
+        this.__obj = this.__obj || {};
+        return Delver.get( this.__obj, key );
+    },
 
-    self.package = self.package || {};
-    const packageString = JSON.stringify( self.package, options.json.replacer, options.json.indent );
+    set: function( key, value ) {
+        this.__obj = this.__obj || {};
+        return Delver.set( this.__obj, key, value );
+    },
 
-    if ( callback ) {
-        fs.writeFile( filename, packageString, callback );
+    serialize: function( _options ) {
+        const options = extend( true, {
+            replacer: null,
+            index: 4
+        }, _options );
+
+        return JSON.stringify( this.__obj, options.replacer, options.indent );
     }
-    else {
-        fs.writeFileSync( filename, packageString );
+};
+
+module.exports = {
+    create: () => {
+        return Object.assign( {}, Boxcutter );
     }
 };
-
-Boxcutter.get = function( key ) {
-    const self = this;
-    self.package = self.package || {};
-    return Delver.get( self.package, key );
-};
-
-Boxcutter.set = function( key, value ) {
-    const self = this;
-    self.package = self.package || {};
-    return Delver.set( self.package, key, value );
-};
-
-module.exports = Object.assign( function() {}, {
-    prototype: Boxcutter
-} );
-
-module.exports.Boxcutter = Boxcutter;
