@@ -26,14 +26,21 @@ Walks up your directory tree looking for a `package.json` file. If it finds one,
 and allow you to interact with it:
 
 ```sh
-Usage: boxcutter <command>
-  available commands:
-    get               : get a value from the package.json
-    set               : set a value in the package.json
-    help <command>    : get help for the specified command
-  options:
-    --indent <num>    : will indent json output the specified number of spaces
-    --file <filename> : will use specified json as input / output file
+boxcutter <command>
+
+Commands:
+  boxcutter get <key>          get the value of <key>
+  boxcutter set <key> <value>  set <key> to <value>
+
+Options:
+  --version  Show version number                                       [boolean]
+  --stdin    read json from stdin vs. from a file or package.json
+                                                                [default: false]
+  --file     the file to search up the directory path for
+                                                       [default: "package.json"]
+  --indent   indentation level for json output                      [default: 2]
+  --save     write changes back to input file                   [default: false]
+  --help     Show help                                                 [boolean]
 ```
 
 Example:
@@ -56,15 +63,33 @@ Boxcutter
 Boxcutter API Documentation
 ```
 
+You may can also specify `--stdin` to read json from stdin instead of from a file:
+```sh
+> echo "{ \"foo\": \"bar\" }" | boxcutter --stdin get foo
+bar
+> echo "{ \"foo\": \"bar\" }" | boxcutter --stdin set foo yak
+{
+    "foo": "yak"
+}
+```
+
 ## API
 
 ```javascript
 const Boxcutter = require( 'boxcutter' );
-const boxcutter = Object.assign( {}, Boxcutter.Boxcutter );
+const boxcutter = Boxcutter.create();
 
 boxcutter.load( './package.json' );
 console.log( boxcutter.get( 'version' ) );
 ```
+
+### read( json )
+
+```javascript
+boxcutter.read( '{ "foo": "bar" }' );
+```
+
+Reads the given JSON into the instance.
 
 ### load( filename )
 
@@ -100,52 +125,26 @@ boxcutter.set( 'scripts.test', 'tape test/*.js' );
 boxcutter.set( 'keywords[0]', 'boxcutter' );
 ```
 
-### save( filename[, options[, callback]] )
+### async save( filename[, options] )
 
 ```javascript
-boxcutter.save( './package.json', function( error ) {
-    if ( error ) {
-        console.error( error );
-    }
-} );
+await boxcutter.save( './package.json' );
 ```
 
 Saves the current settings to an output file. You can pass options to control the output, eg:
 
 ```javascript
-boxcutter.save( './package.json', {
-    json: {
-        indent: 4
-    }
-}, function( error ) {
-    if ( error ) {
-        console.error( error );
-    }
+await boxcutter.save( './package.json', {
+    indent: 4
 } );
 ```
 
-If you call this method without a callback, it will execute synchronously and potentially throws, eg:
+### serialize( [options] )
 
 ```javascript
-try {
-    boxcutter.save( './package.json' );
-}
-catch( ex ) {
-    console.error( ex );
-}
+console.log( boxcutter.serialize( {
+    indent: 4
+} ) );
 ```
 
-or, with options but no callback:
-
-```javascript
-try {
-    boxcutter.save( './package.json', {
-        json: {
-            indent: 4
-        }
-    } );
-}
-catch( ex ) {
-    console.error( ex );
-}
-```
+Serializes the current state to JSON with the given options.
