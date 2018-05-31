@@ -8,7 +8,7 @@ const util = require( 'util' );
 const walk_up = util.promisify( require( 'walk-up' ) );
 const yargs = require( 'yargs' );
 
-const Boxcutter = require( path.resolve( path.join( __dirname, '..', 'index.js' ) ) );
+const Boxcutter = require( '..' );
 
 async function read_stdin() {
     let buf = '';
@@ -26,19 +26,23 @@ async function read_stdin() {
 yargs
     .option( 'stdin', {
         default: false,
-        description: 'read json from stdin vs. from a file or package.json'
+        description: 'read json from stdin vs. from a file or package.json',
+        global: true
     } )
     .option( 'file', {
         default: 'package.json',
-        description: 'the file to search up the directory path for'
+        description: 'the file to search up the directory path for',
+        global: true
     } )
     .option( 'indent', {
         default: 2,
-        description: 'indentation level for json output'
+        description: 'indentation level for json output',
+        global: true
     } )
     .option( 'save', {
         default: false,
-        description: 'write changes back to input file'
+        description: 'write changes back to input file',
+        global: true
     } )
     .command( {
         command: 'get <key>',
